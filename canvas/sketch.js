@@ -21,8 +21,8 @@ let ball;
 new p5(p5 => {
 
     p5.preload = () => {
-        spritesheet1 = p5.loadImage("./assets/sprites/sprites1.png");
-        background1 = p5.loadImage("./assets/sprites/pexels-pixabay-414171_filtered.jpg");
+        spritesheet1 = p5.loadImage("./assets/images/sprites1.png");
+        background1 = p5.loadImage("./assets/images/pexels-pixabay-414171_filtered.jpg");
     }
 
     p5.setup = () => {
