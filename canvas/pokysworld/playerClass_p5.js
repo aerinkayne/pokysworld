@@ -67,6 +67,9 @@ export class Player{
 		p5.pop();
 	}
 	manageSprites(sprites){
+		if(this.sprites == null) {
+			this.sprites = [sprites.pokyRunR1]
+		}
 		//falling, swimming, climbing, canClimb
 		//todo  w/87 for up, decrease speed while swimming.  simplify
 		(this.canSwim) ? this.setSize(35,35) : this.setSize(30,35);
@@ -108,14 +111,14 @@ export class Player{
 		this.P.y= p5.constrain(this.P.y, -p5.height, game.levelH-this.h);
 	}
  
-	manageUpdates(game){
+	manageUpdates(p5, game){
 		if (!game.paused){
 			this.move();
 			this.manageSprites(game.sprites);
 			this.updatePosition(game);
-			this.updateTranslation(game);
+			this.updateTranslation(p5, game);
 			this.updateDamageTimer();
-			this.bound(game);
+			this.bound(p5, game);
 		}
 	}
 	
@@ -195,7 +198,7 @@ export class Player{
 		this.canJump = false;
 		this.addFriction();
 		
-		this.P.x+=this.V.x;
+		this.P.x += this.V.x;
 		game.mapCollision("X");
 		
 		if (!this.canJump && !(this.canClimb && this.movements['87'])){
@@ -210,9 +213,10 @@ export class Player{
 		game.mapCollision("Y");
 	}
 	updateTranslation(p5, game){
-		this.T.x = (this.P.x + this.w/2 >= game.levelW-p5.width/2) ? game.levelW-p5.width  
+		//console.log(game)
+		this.T.x = (this.P.x + this.w/2 >= game.levelW - p5.width/2) ? game.levelW - p5.width  
 									: p5.round(p5.max(0, this.P.x + this.w/2 - p5.width/2));
-		this.T.y = (this.P.y + this.h/2 >= game.levelH-p5.height/2)? game.levelH-p5.height 
+		this.T.y = (this.P.y + this.h/2 >= game.levelH - p5.height/2)? game.levelH - p5.height 
 									: p5.round(this.P.y + this.h/2 - p5.height/2);  //no upper bound
 	}
 }	

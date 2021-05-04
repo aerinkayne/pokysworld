@@ -14,7 +14,7 @@ export class GameScreen {
 	
 	updatePosition(T){  //vector of player translation values 
 		this.P.x = T.x; 
-		this.P.y = T.y;		
+		this.P.y = T.y;	
 	}
 	
 	drawScreen(p5){  
@@ -35,20 +35,21 @@ export class GameScreen {
 		for (let i = 0; i < num; i++){
 			rectColor = p5.lerpColor(C1, C2, i/num);
 			p5.fill(rectColor);
-			p5.rect(0,i*H,p5.width,H);
+			p5.rect(0, i*H, p5.width, H);
 		}
 	}
 
 	drawBackgrounds(p5, game){
-		game.levelData[game.currentLevel].levelBackgroundImages.forEach(config => {
+		game.levelData[game.currentLevel].levelBackgroundImages.forEach(obj => {
 			//x coord, y coord, width, total height onscreen
-			let bg = config.img.get(config.rate*game.player.T.x, 0, p5.width, p5.ceil(p5.min(p5.height-config.Y+config.rate*game.player.T.y, config.img.height)));
-			p5.image(bg, 0, config.Y-config.rate*game.player.T.y, bg.width, bg.height);
+			let bg = obj.img.get(obj.rate * game.player.T.x, 0, 
+							p5.width, p5.ceil(p5.min(p5.height - obj.Y + obj.rate * game.player.T.y, obj.img.height)));
+			p5.image(bg, 0, obj.Y-obj.rate*game.player.T.y, bg.width, bg.height);
 
 			/*noFill();  //uncomment to check get values and img draw locations
 			strokeWeight(4);
 			stroke(255);
-			rect(0, config.Y-config.rate*game.player.T.y, bg.width, bg.height);
+			rect(0, obj.Y-obj.rate*game.player.T.y, bg.width, bg.height);
 			strokeWeight(1);
 			noStroke();//*/
 		});
@@ -58,7 +59,7 @@ export class GameScreen {
 	populateArrays(p5, game){  
 		let tempArrB = [];
 		let tempArrF = [];
-		let obj;
+		let obj = null;
 		game.levelData[game.currentLevel].levelEffects.forEach((effect, index) => {  
 			let numB = game.levelData[game.currentLevel].numBGEffects[index];
 			let numF = game.levelData[game.currentLevel].numFGEffects[index];
@@ -67,11 +68,13 @@ export class GameScreen {
 			else if (effect ==="rain"){obj = Raindrop;}
 
 			while(numB > 0){
-				tempArrB.push(new obj(this.P.x + p5.random(p5.width), this.P.y + p5.random(p5.height), 0.5, 1));
+				tempArrB.push(new obj(p5, this.P.x + p5.floor(p5.random(p5.width)), 
+											this.P.y + p5.floor(p5.random(p5.height)), 0.5, 1));
 				numB--;
 			}
 			while(numF > 0){
-				tempArrF.push(new obj(this.P.x + p5.random(p5.width), this.P.y + p5.random(p5.height), 1, 1));
+				tempArrF.push(new obj(p5, this.P.x + p5.floor(p5.random(p5.width)), 
+											this.P.y + p5.floor(p5.random(p5.height)), 1, 1));
 				numF--;
 			}
 		}); 
@@ -81,12 +84,12 @@ export class GameScreen {
 		this.foregroundObjects = this.foregroundObjects.concat(tempArrF);
 	}
 
-	drawArrObjects(game, arr){
+	drawArrObjects(p5, game, arr){
 		arr.forEach(obj => {  
-			obj.draw();
+			obj.draw(p5);
 			if(!game.paused){
 				obj.updatePosition(this);
-				obj.checkBounds(this);
+				obj.checkBounds(p5, this);
 			}
 		});
 	}
@@ -95,13 +98,13 @@ export class GameScreen {
 
 
 export class Snowflake{
-	constructor(p5, x,y, scaleMin, scaleMax){
-	this.P = p5.createVector(x,y);
-	this.scale = p5.random(scaleMin, scaleMax);
-	this.V = p5.createVector(p5.random(-1,1), 2*this.scale);
-	p5.width = p5.ceil(5*this.scale);  //max size
-	p5.height = p5.ceil(5*this.scale);
-	this.opacity = 130 + 250*this.scale/2;
+	constructor(p5, x, y, scaleMin, scaleMax){
+		this.P = p5.createVector(x,y);
+		this.scale = p5.random(scaleMin, scaleMax);
+		this.V = p5.createVector(p5.random(-1,1), 2*this.scale);
+		p5.width = p5.ceil(5*this.scale);  //max size
+		p5.height = p5.ceil(5*this.scale);
+		this.opacity = 130 + 250*this.scale/2;
 	}
 	updatePosition(){
 		this.P.add(this.V);
@@ -132,7 +135,7 @@ export class Snowflake{
 
 export class Raindrop extends Snowflake{
 	constructor(p5, x, y, scaleMin, scaleMax){
-		super(x,y, scaleMin, scaleMax);
+		super(p5, x,y, scaleMin, scaleMax);
 		this.V = p5.createVector(1.5*this.scale, 10*this.scale);
 		p5.width = p5.ceil(2*this.V.x);
 		p5.height = p5.ceil(2*this.V.y);

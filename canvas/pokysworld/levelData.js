@@ -29,9 +29,9 @@ export const levelData = [
 		"d1 0L 0L d1 d1 0L 0L d1 d1 d1 d1 d1 d1 d1 d1 d1 0w 0w 0w 0w 0w 0w 0w 0w 0w 0w i3 i3 0w 0w i3 i3 i3 i3 i3 "
 		],
 	//images assigned in preload.  properties refer to image, translation rate relative to player translation, and intitial P.y location of image.
-	levelBackgroundImages: [{img:null, rate:1/20, Y: 175},  
-							{img:null, rate:1/10,  Y: 0},
-							{img:null, rate:1/3,  Y: 230}], 
+	levelBackgroundImages: [{img:null, rate:0.05, Y: 175},  
+							{img:null, rate:0.1,  Y: 0},
+							{img:null, rate:0.4,  Y: 230}], 
 	skyStart: [120,170,255],
 	skyEnd: [250,95,40],
 	levelMusic: null,  //assign in preload

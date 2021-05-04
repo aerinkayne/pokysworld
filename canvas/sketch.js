@@ -1,7 +1,6 @@
 //game file imports from pokyworld
 import { levelData, btnStart, btnPause } from './pokysworld/levelData.js'
 import {Button} from './pokysworld/projectFunc_p5.js'
-import Ball from './pokysworld/Ball.js'
 import Game from './pokysworld/gameClass_p5.js';
 
 
@@ -10,13 +9,10 @@ let game = null;
 let startBtn = null;
 let pauseBtn = null;
 
-let spritesheet1, background1;
+let spritesheet1, background1, background2, background3;
 //blocks and items
 let sprites = {};
 
-
-//test
-let ball;
 
 
 //p5 script is in header, will work.
@@ -24,17 +20,22 @@ new p5(p5 => {
 
     p5.preload = () => {
         spritesheet1 = p5.loadImage("./assets/images/sprites1.png");
-        background1 = p5.loadImage("./assets/images/pexels-pixabay-414171_filtered.jpg");
+        //background1 = p5.loadImage("./assets/images/pexels-pixabay-414171_filtered_400px.jpg");
+        background1 = p5.loadImage("./assets/images/BG0.png")
+        background2 = p5.loadImage("./assets/images/BG1.png")
+        background3 = p5.loadImage("./assets/images/BG2.png")
     }
 
     p5.setup = () => {
-        let c = p5.createCanvas(600,400);
+        let c = p5.createCanvas(500,400);
         c.parent('canvas-parent');
         p5.frameRate(60);
 
-        ball = new Ball(p5, 30);
-        //backgrounds
+       
+        //backgrounds.  lv, img1, img2 img3
         levelData[0].levelBackgroundImages[0].img = background1;
+        levelData[0].levelBackgroundImages[1].img = background2;
+        levelData[0].levelBackgroundImages[2].img = background3;
 
         //sprites
         sprites.grass1 = spritesheet1.get(0,0,50,15); 
@@ -85,25 +86,25 @@ new p5(p5 => {
         sprites.pokyClimb2 = spritesheet1.get(385,50, 40,50);
 
         game = new Game(sprites, p5);
+        game.levelData = levelData;
 
         
 
         startBtn = new Button(p5, btnStart, ()=> {
             game.gameState = "inGame";
-            console.log(game.gameState);
+            console.log(game);  //TODO:
 		});
         pauseBtn = new Button(p5, btnPause, ()=> {
+            //
 			(!game.paused) ? btnPause.txt = "➤" : btnPause.txt = "❚❚";
 			(!game.paused) ? btnPause.txtColor = [200,255,255] : btnPause.txtColor = [0,0,0];
 			(!game.paused) ? game.paused = true : game.paused = false;
 		});
-
-        console.log(startBtn, pauseBtn);
-
     }
 
     p5.keyPressed = (ev) => {
         let { keyCode } = ev;
+        console.log(game);
         if (game !== null && game.player.movements.hasOwnProperty(keyCode)){
             game.player.movements[keyCode] = true;  
         }
@@ -119,12 +120,6 @@ new p5(p5 => {
 
 
     p5.draw = () => {
-        
-        p5.background(35);
-        startBtn.draw(p5)
-        //p5.image(background1, 0, 0);
-        //p5.image(sprites.grass1, p5.width/2, p5.height/2);
-        ball.show(p5)
-        ball.move(p5)
+        game.manageScenes(p5, startBtn, pauseBtn);
     }
 });

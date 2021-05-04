@@ -1,16 +1,23 @@
-//TODO: is this being used?? discover greatness!
+//distance between the center of two objects
 export function getDistance (p5, obj1, obj2) {
 	return  p5.sqrt(p5.sq(obj1.P.x + obj1.w/2 -(obj2.P.x + obj2.w/2)) + 
 			p5.sq(obj1.P.y + obj1.h/2 -(obj2.P.y + obj2.h/2))); 
 }
 
-export const haveCollided = (refBox, obj) => {
-	//are refBox and obj overlapping, where both boxes have vector P
-	return  refBox.P.x < obj.P.x + obj.w && refBox.P.x + refBox.w > obj.P.x &&
-			refBox.P.y < obj.P.y + obj.h && refBox.P.y + refBox.h > obj.P.y;
+/*takes a refBox obj, and another obj (or array of objs), and returns true if they are overlapping, 
+refBox and the obj(s) being tested have a position vector property P */
+export const areColliding = (refBox, obj) => {
+	if (obj.length){  //if 2nd param is an array, check if refBox is colliding with any of them
+		return obj.some(ele => refBox.P.x < ele.P.x + ele.w && refBox.P.x + refBox.w > ele.P.x &&
+								refBox.P.y < ele.P.y + ele.h && refBox.P.y + refBox.h > ele.P.y)
+	}
+	else {
+		return  refBox.P.x < obj.P.x + obj.w && refBox.P.x + refBox.w > obj.P.x &&
+				refBox.P.y < obj.P.y + obj.h && refBox.P.y + refBox.h > obj.P.y; 
+		}
 }
 
-export const mouseIsOver = (p5, mouseX, mouseY) => {
+export const mouseIsOver = (mouseX, mouseY) => {
 	return (mouseX > this.P.x && mouseX < this.P.x + this.w &&
 			mouseY > this.P.y && mouseY < this.P.y + this.h);
 }
@@ -54,13 +61,11 @@ export class Button{
 
 export class LevelSelectButton extends Button{
 	constructor(config, callback, number){
-	super(config, callback);
-	this.accessLevel = number-1;
-	this.txt = `This path leads to ${number}`;
+		super(config, callback);
+		this.accessLevel = number-1;
+		this.txt = `This path leads to ${number}`;
 	}
 }
-
-
 
 
 
@@ -75,7 +80,6 @@ export class MapTile {
 		this.w = w;
 		this.h = h;
 		this.img = img;
-		this.sprites = [];
 		this.cycleTime = 250;
 		this.drawTimer = 0;
 		this.frictionVal = 1;   //same as intial values of character class 
@@ -89,7 +93,7 @@ export class MapTile {
 		obj.acceleration = this.accelerationVal;
 		obj.maxSpeed = this.maxSpeedVal;
 	}
-	collide(obj){
+	collide(obj){  //TODO: use expression outside class.
 		return  this.P.x < obj.P.x + obj.w && this.P.x + this.w > obj.P.x &&
           this.P.y < obj.P.y + obj.h && this.P.y + this.h > obj.P.y;
 	}
@@ -123,28 +127,30 @@ export class MapTile {
 	draw(p5) {
 		p5.push();
 		p5.translate(this.P.x, this.P.y);
-		if (this.img){p5.image(this.img, 0, 0, this.w+1, this.h+1);} //overlap covers right and bottom outline
-		else if(this.sprites.length){
-			let numSprites = this.sprites.length;
+		if(this.img.length > 1){
+			let numSprites = this.img.length;
 			let timePerSprite = this.cycleTime/numSprites;
 			let i = p5.floor(this.drawTimer/timePerSprite);
-			p5.image(this.sprites[i], 0, 0, this.w+1, this.h+1); 
+			p5.image(this.img[i], 0, 0, this.w+1, this.h+1); 
 			this.updateDrawTimer();
-		}
+		} else {
+			p5.image(this.img, 0, 0, this.w+1, this.h+1); //1px overlap covers right and bottom outline
+		} 
 		p5.pop();
 	}  
 }
+
 export class MovingTile extends MapTile{
-	constructor(p5, x,y,w,h,vx,vy){
-	super(x,y,w,h                );
-	this.V = p5.createVector(vx,vy);
-	this.Vhold = p5.createVector(0,0);
-	this.cycleTime = 600;
-	this.holdTime = 100;
-	this.offset = p5.floor(p5.random(this.holdTime, this.cycleTime));
-	this.timer = this.offset;
-	this.P.x += (this.timer-this.holdTime)*this.V.x;  //move location to correspond to timer value
-	this.P.y += (this.timer-this.holdTime)*this.V.y; 
+	constructor(p5, x, y, w, h, img=0, vx, vy){
+		super(p5, x, y, w, h, img);
+		this.V = p5.createVector(vx, vy);
+		this.Vhold = p5.createVector(0,0);
+		this.cycleTime = 600;
+		this.holdTime = 100;
+		this.offset = p5.floor(p5.random(this.holdTime, this.cycleTime));
+		this.timer = this.offset;
+		this.P.x += (this.timer-this.holdTime)*this.V.x;  //move location to correspond to timer value
+		this.P.y += (this.timer-this.holdTime)*this.V.y; 
 	}
 	collide(obj){
 		return  this.P.x < obj.P.x + obj.w && this.P.x + this.w > obj.P.x &&
@@ -171,47 +177,37 @@ export class MovingTile extends MapTile{
 		}
 	}
 }
+
+/* keep in case decide to change friction
 export class IceMover extends MovingTile{
-	constructor(x,y,w,h,vx,vy){
-	super(x,y,w,h,vx,vy);
-	this.img = sprMoveIce;
+	constructor(x,y,w,h,img,vx,vy){
+	super(x,y,w,h,img,vx,vy);
 	}
-}
+}*/
 export class CloudMover extends MovingTile{
-	constructor(x,y,w,h,vx,vy){
-	super(x,y,w,h,vx,vy);
-	this.jumpVal = 15;
-	this.img = sprMoveCloud;
+	constructor(p5, x,y,w,h,img=null,vx,vy){
+		super(p5,x,y,w,h,img,vx,vy);
+		this.jumpVal = 15;
 	}
 }
 
-
-export class DirtTile extends MapTile{
-	constructor(x,y,w,h, img){
-	super(x,y,w,h);
-	this.img = img;
-	}
-}
 export class CloudTile extends MapTile{
-	constructor(x,y,w,h, arrSprites){
-	super(x,y,w,h);
-	this.sprites = arrSprites;
-	this.jumpVal = 15;
+	constructor(p5,x,y,w,h, img=null){
+		super(p5,x,y,w,h, img);
+		this.jumpVal = 15;
 	}
 }
 export class IceTile extends MapTile{
-	constructor(x,y,w,h, img){
-	super(x,y,w,h);
-	this.img = img;
-	this.frictionVal = 0.05;   
-	this.accelerationVal = 0.1;
-	this.maxSpeedVal = 5;
+	constructor(p5,x,y,w,h, img=null){
+		super(p5,x,y,w,h, img);
+		this.frictionVal = 0.05;   
+		this.accelerationVal = 0.1;
+		this.maxSpeedVal = 5;
 	}
 }
 export class ClimbTile extends MapTile{
-	constructor(x,y,w,h, img){
-	super(x,y,w,h);
-	this.img = img;
+	constructor(p5,x,y,w,h, img=null){
+		super(p5,x,y,w,h, img);
 	}
 	collideEffect(obj){
 		obj.canClimb = true;
@@ -219,8 +215,8 @@ export class ClimbTile extends MapTile{
 	}
 }
 export class WaterTile extends MapTile{
-	constructor(x,y,w,h,hasSurface){
-		super(x,y,w,h);
+	constructor(p5,x,y,w,h,hasSurface){
+		super(p5,x,y,w,h);
 		this.hasSurface = hasSurface;
 		this.fatigue = 1;
 		this.jumpVal = 8;
@@ -265,9 +261,10 @@ export class WaterTile extends MapTile{
 		p5.pop();
 	}
 }
+
 export class LavaTile extends MapTile{
-	constructor(x,y,w,h){
-		super(x,y,w,h);
+	constructor(p5,x,y,w,h){
+		super(p5,x,y,w,h);
 		this.alt = 4;
 		this.damage = 5;
 		this.color = [225,50,10];
@@ -303,9 +300,10 @@ export class LavaTile extends MapTile{
 		p5.pop();
 	}
 }
+
 export class HealthSpringTile extends LavaTile{
-	constructor(x,y,w,h){
-		super(x,y,w,h);
+	constructor(p5,x,y,w,h){
+		super(p5,x,y,w,h);
 		this.alt = 1.5;
 		this.damage = -5;
 		this.color = [0,200,225, 125];
@@ -320,10 +318,11 @@ export class HealthSpringTile extends LavaTile{
 //*************************************
 
 export class Collectable extends MapTile{
-	constructor(x,y,w,h){
-	super(x,y,w,h);
+	constructor(p5,x,y,w,h, img=null){
+	super(p5,x,y,w,h, img);
 	this.collected = false;
 	}
+	/*
 	modHealth(obj){
 		
 	}
@@ -332,34 +331,35 @@ export class Collectable extends MapTile{
 	}
 	modInventory(obj){
 		
-	}
+	}*/
 	collideEffect(obj){
+		console.log(obj)  //TODO:
 		this.collected = true;
 	}
 	draw(p5) {
 		if (!this.collected){
 			p5.push();
 			p5.translate(this.P.x, this.P.y);
-			if (this.img){
-				p5.image(this.img, 0, 0, this.w, this.h);
-			} 
-			else if(this.sprites.length){
-				let numSprites = this.sprites.length;
+			//cycle if array
+			if(this.img.length > 1){
+				let numSprites = this.img.length;
 				let timePerSprite = this.cycleTime/numSprites;
 				let i = p5.floor(this.drawTimer/timePerSprite);
-				p5.image(this.sprites[i], 0, 0, this.w, this.h); 
+				p5.image(this.img[i], 0, 0, this.w, this.h); 
 				this.updateDrawTimer();
-			}
+			//otherwise just draw the image
+			} else {
+				p5.image(this.img, 0, 0, this.w, this.h);
+			} 
 			p5.pop();
 		}
 	} 
 }
 export class Heart extends Collectable{
-	constructor(x,y,w,h){
-	super(x,y,w,h);	
+	constructor(p5,x,y,w,h, img=null){
+	super(p5,x,y,w,h, img);	
 	this.cycleTime = 50;
 	this.numberVal = 10;
-	this.sprites = [sprHeart1, sprHeart2];
 	}
 	collideEffect(obj){
 		if(!this.collected && obj.health < obj.maxHealth){
@@ -372,22 +372,10 @@ export class Heart extends Collectable{
 	}
 }
 export class ImageTile extends MapTile{
-	constructor(x,y,w,h){
-	super(x,y,w,h);	
+	constructor(p5,x,y,w,h, img=null){
+		super(p5,x,y,w,h, img);	
 	}
 	collide(){
-		return 0;
-	}
-}
-export class GrassTile extends ImageTile{
-	constructor(x,y,w,h){
-	super(x,y,w,h);	
-	this.img = sprGrass1;
-	}
-}
-export class CloverTile extends ImageTile{
-	constructor(x,y,w,h){
-	super(x,y,w,h);	
-	this.img = sprClover1;
+		return 0;  //TODO: remove own collide from blocks, might not need sep class 
 	}
 }
