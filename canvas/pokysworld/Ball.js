@@ -6,7 +6,7 @@ export default class Ball{
         this.d = 2*r;
     }
     show(p5){
-        p5.color(255)
+        p5.fill(255)
         p5.ellipse(this.P.x, this.P.y, this.d, this.d)
     }
     move(p5){

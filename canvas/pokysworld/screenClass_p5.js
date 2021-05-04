@@ -1,10 +1,10 @@
-class GameScreen {
+export class GameScreen {
 	constructor(p5){  
-	this.P = p5.createVector(0, 0);  
-	this.backgroundObjects = [];
-	this.foregroundObjects = [];
-	this.opacity = 0; 
- 	this.color = [0,0,0]; 
+		this.P = p5.createVector(0, 0);  
+		this.backgroundObjects = [];
+		this.foregroundObjects = [];
+		this.opacity = 0; 
+		this.color = [0,0,0]; 
 	}
 
 	isOnScreen(p5, obj){
@@ -29,9 +29,9 @@ class GameScreen {
 		let rectColor;
 		let H = p5.height/40;
 		let num = p5.height/H;
-  		let C1 = p5.color(game.levelData[game.currentLevel].skyStart);
-  		let C2 =p5.color(game.levelData[game.currentLevel].skyEnd);
-  		p5.noStroke();
+		let C1 = p5.color(game.levelData[game.currentLevel].skyStart);
+		let C2 =p5.color(game.levelData[game.currentLevel].skyEnd);
+		p5.noStroke();
 		for (let i = 0; i < num; i++){
 			rectColor = p5.lerpColor(C1, C2, i/num);
 			p5.fill(rectColor);
@@ -94,7 +94,7 @@ class GameScreen {
 
 
 
-class Snowflake{
+export class Snowflake{
 	constructor(p5, x,y, scaleMin, scaleMax){
 	this.P = p5.createVector(x,y);
 	this.scale = p5.random(scaleMin, scaleMax);
@@ -115,7 +115,7 @@ class Snowflake{
 		p5.pop();
 	}
 	checkBounds(p5, gameScreen){  
-  		if (this.P.x + p5.width < gameScreen.P.x){
+		if (this.P.x + p5.width < gameScreen.P.x){
 			this.P.x = gameScreen.P.x + gameScreen.w + p5.width;
 		}
 		if (this.P.x - p5.width > gameScreen.P.x + gameScreen.w){
@@ -130,7 +130,7 @@ class Snowflake{
 	}
 }
 
-class Raindrop extends Snowflake{
+export class Raindrop extends Snowflake{
 	constructor(p5, x, y, scaleMin, scaleMax){
 		super(x,y, scaleMin, scaleMax);
 		this.V = p5.createVector(1.5*this.scale, 10*this.scale);
@@ -162,3 +162,4 @@ class Bird extends Snowflake(){
  }
 }
 */
+

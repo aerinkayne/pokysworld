@@ -79,10 +79,7 @@ export const btnStart = {
 	txt: "Click to Start",
 	txtSize: 16,
 	txtColor: [0,0,0],
-	btnColor: [0,200,200],
-	onClick: ()=> {
-		pokyGame.gameState = "inGame";
-	}
+	btnColor: [0,200,200]
 }
 export const btnPause = {
 	x: scrW/50,
@@ -93,12 +90,7 @@ export const btnPause = {
 	txt: "❚❚",
 	txtSize: 10,
 	txtColor: [0,0,0],
-	btnColor: [0,200,150],
-	onClick: ()=> {
-		(!pokyGame.paused) ? this.txt = "➤" : this.txt = "❚❚";
-		(!pokyGame.paused) ? this.txtColor = [200,255,255] : this.txtColor = [0,0,0];
-		(!pokyGame.paused) ? pokyGame.paused = true : pokyGame.paused = false;
-	}
+	btnColor: [0,200,150]
 }
 export const btnGoToLevel = {
 	x: scrW/50,
@@ -106,15 +98,17 @@ export const btnGoToLevel = {
 	w: scrW/16,
 	h: scrH/25,
 	r: 2,
- 	accessLevel: 1,
+	accessLevel: 1,
 	txt: "❚❚",
 	txtSize: 10,
 	txtColor: [0,0,0],
-	btnColor: [0,200,150],
+	btnColor: [0,200,150]
+	/*
 	onClick: ()=> {
 		if (this.accessLevel >=0 && this.accessLevel < pokyGame.numLevels){
 			pokyGame.level = this.accessLevel;
 			pokyGame.loadLevel(this.accessLevel);
 		}
 	}
+	*/
 }

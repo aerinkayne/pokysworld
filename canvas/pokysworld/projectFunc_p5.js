@@ -1,22 +1,34 @@
-
-let getDistance = function(obj1, obj2){ //returns dist between center of two objects where P is top left corner vector
-	return sqrt(sq(obj1.P.x + obj1.w/2 -(obj2.P.x + obj2.w/2)) + 
-				sq(obj1.P.y + obj1.h/2 -(obj2.P.y + obj2.h/2))); 
+//TODO: is this being used?? discover greatness!
+export function getDistance (p5, obj1, obj2) {
+	return  p5.sqrt(p5.sq(obj1.P.x + obj1.w/2 -(obj2.P.x + obj2.w/2)) + 
+			p5.sq(obj1.P.y + obj1.h/2 -(obj2.P.y + obj2.h/2))); 
 }
 
+export const haveCollided = (refBox, obj) => {
+	//are refBox and obj overlapping, where both boxes have vector P
+	return  refBox.P.x < obj.P.x + obj.w && refBox.P.x + refBox.w > obj.P.x &&
+			refBox.P.y < obj.P.y + obj.h && refBox.P.y + refBox.h > obj.P.y;
+}
+
+export const mouseIsOver = (p5, mouseX, mouseY) => {
+	return (mouseX > this.P.x && mouseX < this.P.x + this.w &&
+			mouseY > this.P.y && mouseY < this.P.y + this.h);
+}
+
+
 export class Button{
-	constructor(p5, config){
-	this.P = p5.createVector(config.x, config.y);
-	this.w = config.w;
-	this.h = config.h;
-	this.r = config.r;  //border radius for rectangles
-	this.txt = config.txt;
-	this.txtSize = config.txtSize;
-	this.txtColor = config.txtColor;
-	this.btnColor = config.btnColor;
-	this.clickTimer = 0;
-	this.clickDelay = 20;
-	this.onClick = config.onClick;
+	constructor(p5, config, callback){
+		this.P = p5.createVector(config.x, config.y);
+		this.w = config.w;
+		this.h = config.h;
+		this.r = config.r;  //border radius for rectangles
+		this.txt = config.txt;
+		this.txtSize = config.txtSize;
+		this.txtColor = config.txtColor;
+		this.btnColor = config.btnColor;
+		this.clickTimer = 0;
+		this.clickDelay = 20;
+		this.onClick = callback;
 	}
 	checkClicks(p5){  //called in draw.  timer used to limit calls.  works ontouch
 		if (this.clickTimer < this.clickDelay) {this.clickTimer++;}
@@ -40,20 +52,29 @@ export class Button{
 	}
 }
 
-class LevelSelectButton extends Button{
-	constructor(config, number){
-	super(config);
+export class LevelSelectButton extends Button{
+	constructor(config, callback, number){
+	super(config, callback);
 	this.accessLevel = number-1;
- this.txt = `This path leads to ${number}`;
+	this.txt = `This path leads to ${number}`;
 	}
 }
 
-class MapTile {  
-	constructor(p5, x,y,w,h){  
+
+
+
+
+
+
+
+//map blocks
+
+export class MapTile {  
+	constructor(p5, x, y, w, h, img = null){  
 		this.P = p5.createVector(x,y);
 		this.w = w;
 		this.h = h;
-		this.img = 0;
+		this.img = img;
 		this.sprites = [];
 		this.cycleTime = 250;
 		this.drawTimer = 0;
@@ -82,7 +103,7 @@ class MapTile {
 		}
 		if(Vy < 0){
 			obj.V.y = 0;
-			obj.P.y = this.P.y+this.h;
+			obj.P.y = this.P.y + this.h;
 		}
 		if(Vx < 0){
 			obj.V.x = 0;
@@ -113,11 +134,11 @@ class MapTile {
 		p5.pop();
 	}  
 }
-class MovingTile extends MapTile{
+export class MovingTile extends MapTile{
 	constructor(p5, x,y,w,h,vx,vy){
-	super(x,y,w,h);
+	super(x,y,w,h                );
 	this.V = p5.createVector(vx,vy);
-	this.Vhold = createVector(0,0);
+	this.Vhold = p5.createVector(0,0);
 	this.cycleTime = 600;
 	this.holdTime = 100;
 	this.offset = p5.floor(p5.random(this.holdTime, this.cycleTime));
@@ -150,13 +171,13 @@ class MovingTile extends MapTile{
 		}
 	}
 }
-class IceMover extends MovingTile{
+export class IceMover extends MovingTile{
 	constructor(x,y,w,h,vx,vy){
 	super(x,y,w,h,vx,vy);
 	this.img = sprMoveIce;
 	}
 }
-class CloudMover extends MovingTile{
+export class CloudMover extends MovingTile{
 	constructor(x,y,w,h,vx,vy){
 	super(x,y,w,h,vx,vy);
 	this.jumpVal = 15;
@@ -165,20 +186,20 @@ class CloudMover extends MovingTile{
 }
 
 
-class DirtTile extends MapTile{
+export class DirtTile extends MapTile{
 	constructor(x,y,w,h, img){
 	super(x,y,w,h);
 	this.img = img;
 	}
 }
-class CloudTile extends MapTile{
+export class CloudTile extends MapTile{
 	constructor(x,y,w,h, arrSprites){
 	super(x,y,w,h);
 	this.sprites = arrSprites;
 	this.jumpVal = 15;
 	}
 }
-class IceTile extends MapTile{
+export class IceTile extends MapTile{
 	constructor(x,y,w,h, img){
 	super(x,y,w,h);
 	this.img = img;
@@ -187,7 +208,7 @@ class IceTile extends MapTile{
 	this.maxSpeedVal = 5;
 	}
 }
-class ClimbTile extends MapTile{
+export class ClimbTile extends MapTile{
 	constructor(x,y,w,h, img){
 	super(x,y,w,h);
 	this.img = img;
@@ -197,7 +218,7 @@ class ClimbTile extends MapTile{
 		this.conferProperties(obj);
 	}
 }
-class WaterTile extends MapTile{
+export class WaterTile extends MapTile{
 	constructor(x,y,w,h,hasSurface){
 		super(x,y,w,h);
 		this.hasSurface = hasSurface;
@@ -220,31 +241,31 @@ class WaterTile extends MapTile{
 		this.conferProperties(obj);
 		
 	}	
-	draw() {
-  noStroke();
-		fill(this.color);
-		push();
-		translate(this.P.x, this.P.y);
+	draw(p5) {
+		p5.noStroke();
+		p5.fill(this.color);
+		p5.push();
+		p5.translate(this.P.x, this.P.y);
 		if(this.hasSurface){
 			let alt = 2;
-			rect(0,alt*sin(radians(frameCount)), this.w, this.h-alt*sin(radians(frameCount)));
-			fill(this.surfaceColor);
-			beginShape();
-			curveVertex(0, 1.5*alt*sin(radians(frameCount))+alt*sin(radians(frameCount)));
+			p5.rect(0,alt*p5.sin(p5.radians(p5.frameCount)), this.w, this.h-alt*p5.sin(p5.radians(p5.frameCount)));
+			p5.fill(this.surfaceColor);
+			p5.beginShape();
+			p5.curveVertex(0, 1.5*alt*p5.sin(p5.radians(p5.frameCount))+alt*p5.sin(p5.radians(p5.frameCount)));
 			for (let i=0; i <=4; i++){
-				curveVertex(i*this.w/4, 1.5*alt*sin(radians(frameCount)) + alt*sin(radians(frameCount) + i*PI/2));
+				p5.curveVertex(i*this.w/4, 1.5*alt*p5.sin(p5.radians(p5.frameCount)) + alt*p5.sin(p5.radians(p5.frameCount) + i*p5.PI/2));
 			}
 			for (let i=4; i>0; i--){
-				curveVertex(i*this.w/4, 1.5*alt*sin(radians(frameCount)) - alt*sin(radians(frameCount) + i*PI/2));
+				p5.curveVertex(i*this.w/4, 1.5*alt*p5.sin(p5.radians(p5.frameCount)) - alt*p5.sin(p5.radians(p5.frameCount) + i*p5.PI/2));
 			}
-			curveVertex(0, 1.5*alt*sin(radians(frameCount))-alt*sin(radians(frameCount)));
-			endShape(CLOSE);
+			p5.curveVertex(0, 1.5*alt*p5.sin(p5.radians(p5.frameCount))-alt*p5.sin(p5.radians(p5.frameCount)));
+			p5.endShape(p5.CLOSE);
 		}
-		else{rect(0,0,this.w,this.h);}
-		pop();
+		else{p5.rect(0,0,this.w,this.h);}
+		p5.pop();
 	}
 }
-class LavaTile extends MapTile{
+export class LavaTile extends MapTile{
 	constructor(x,y,w,h){
 		super(x,y,w,h);
 		this.alt = 4;
@@ -262,27 +283,27 @@ class LavaTile extends MapTile{
 			this.conferProperties(obj);
 		}
 	}	
-	draw() {
-		fill(this.color);
-		noStroke();
-		push();
-		translate(this.P.x, this.P.y);
+	draw(p5) {
+		p5.fill(this.color);
+		p5.noStroke();
+		p5.push();
+		p5.translate(this.P.x, this.P.y);
 
-		beginShape();
+		p5.beginShape();
 
 		for (let i=0; i<11; i++){
-			vertex(i*this.w/10, this.alt*sin(radians(2*frameCount)));
+			p5.vertex(i*this.w/10, this.alt*p5.sin(p5.radians(2*p5.frameCount)));
 			this.alt*=-1;
 		}
-		vertex(this.w, this.h);
-		vertex(0, this.h);
-		vertex(0,-this.alt*sin(radians(2*frameCount)));
+		p5.vertex(this.w, this.h);
+		p5.vertex(0, this.h);
+		p5.vertex(0,-this.alt*p5.sin(p5.radians(2*p5.frameCount)));
 		this.alt*=-1;
-		endShape();
-		pop();
+		p5.endShape();
+		p5.pop();
 	}
 }
-class HealthSpringTile extends LavaTile{
+export class HealthSpringTile extends LavaTile{
 	constructor(x,y,w,h){
 		super(x,y,w,h);
 		this.alt = 1.5;
@@ -298,7 +319,7 @@ class HealthSpringTile extends LavaTile{
 
 //*************************************
 
-class Collectable extends MapTile{
+export class Collectable extends MapTile{
 	constructor(x,y,w,h){
 	super(x,y,w,h);
 	this.collected = false;
@@ -315,23 +336,25 @@ class Collectable extends MapTile{
 	collideEffect(obj){
 		this.collected = true;
 	}
-	draw() {
+	draw(p5) {
 		if (!this.collected){
-			push();
-			translate(this.P.x, this.P.y);
-			if (this.img){image(this.img, 0, 0, this.w, this.h);} 
+			p5.push();
+			p5.translate(this.P.x, this.P.y);
+			if (this.img){
+				p5.image(this.img, 0, 0, this.w, this.h);
+			} 
 			else if(this.sprites.length){
 				let numSprites = this.sprites.length;
 				let timePerSprite = this.cycleTime/numSprites;
-				let i = floor(this.drawTimer/timePerSprite);
-				image(this.sprites[i], 0, 0, this.w, this.h); 
+				let i = p5.floor(this.drawTimer/timePerSprite);
+				p5.image(this.sprites[i], 0, 0, this.w, this.h); 
 				this.updateDrawTimer();
 			}
-			pop();
+			p5.pop();
 		}
 	} 
 }
-class Heart extends Collectable{
+export class Heart extends Collectable{
 	constructor(x,y,w,h){
 	super(x,y,w,h);	
 	this.cycleTime = 50;
@@ -348,7 +371,7 @@ class Heart extends Collectable{
 		}
 	}
 }
-class ImageTile extends MapTile{
+export class ImageTile extends MapTile{
 	constructor(x,y,w,h){
 	super(x,y,w,h);	
 	}
@@ -356,13 +379,13 @@ class ImageTile extends MapTile{
 		return 0;
 	}
 }
-class GrassTile extends ImageTile{
+export class GrassTile extends ImageTile{
 	constructor(x,y,w,h){
 	super(x,y,w,h);	
 	this.img = sprGrass1;
 	}
 }
-class CloverTile extends ImageTile{
+export class CloverTile extends ImageTile{
 	constructor(x,y,w,h){
 	super(x,y,w,h);	
 	this.img = sprClover1;
