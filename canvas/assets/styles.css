@@ -1,0 +1,22 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: #334;
+}
+
+#canvas-parent {
+    margin: 3em auto 1em;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+canvas {
+    box-sizing: content-box;
+    border: 1px outset rgb(22, 28, 46);
+    border-radius: 2px;
+}

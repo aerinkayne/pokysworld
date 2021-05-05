@@ -1,5 +1,4 @@
-//import { levelData } from "./levelData.js";
-import { MapTile, MovingTile, IceTile, CloudTile, LavaTile, HealthSpringTile, CloudMover, WaterTile, ClimbTile, Heart, ImageTile, getDistance } from './projectFunc_p5.js';
+import { MapTile, MovingTile, IceTile, CloudTile, LavaTile, HealthSpringTile, CloudMover, WaterTile, ClimbTile, Heart, ImageTile, getDistance } from './MapTiles.js';
 import { Player } from './playerClass_p5.js';
 import { GameScreen } from './screenClass_p5.js';
 
@@ -33,6 +32,7 @@ export default class Game {
 		if (this.gameState === "start") {
 			p5.background(100,100,125);
 			btnStart.draw(p5);
+			//console.log('calling');
 		}
 		
 		if (this.gameState === "inGame") {
@@ -41,8 +41,10 @@ export default class Game {
 				this.gameScreen.populateArrays(p5, this);
 				this.setup = true;
 			}	
+			//not currently used
+			//this.gameScreen.shadeSky(p5, this);
 
-			this.gameScreen.shadeSky(p5, this);
+			
 			this.gameScreen.drawBackgrounds(p5, this);
 			this.gameCamera(p5);
 			this.gameScreen.updatePosition(this.player.T); //needs to be after cam to track properly
@@ -66,6 +68,7 @@ export default class Game {
 			this.player.healthBar(p5);
 			this.player.manaBar(p5);
 			btnPause.draw(p5);
+			
 		}
 	}
 	loadLevelMap(p5){
@@ -98,6 +101,15 @@ export default class Game {
 				}
 				else if(t==="d1 "){
 					this.mapTiles.push(new MapTile(p5, x,y,S,S, this.sprites.dirt1));
+				}
+				else if(t==="d2 "){
+					this.mapTiles.push(new MapTile(p5, x,y,S,S, this.sprites.dirt2));
+				}
+				else if(t==="d3 "){
+					this.mapTiles.push(new MapTile(p5, x,y,S,S, this.sprites.dirt3));
+				}
+				else if(t==="d4 "){
+					this.mapTiles.push(new MapTile(p5, x,y,S,S, this.sprites.dirt4));
 				}
 				else if(t==="CL "){
 					this.mapTiles.push(new CloudTile(p5,x,y,S,S, [this.sprites.cloudL1, this.sprites.cloudL2]));
@@ -132,7 +144,7 @@ export default class Game {
 					this.movingTiles.push(M);
 				}
 				else if(t==="cm "){
-					let M = new CloudMover(p5,x, y, 7/5*S, 4/5*S, 0, 0.5);
+					let M = new CloudMover(p5, x, y, 7/5*S, 4/5*S, this.sprites.moveCloud, 0, 0.5);
 					this.mapTiles.push(M);
 					this.movingTiles.push(M);
 				}
@@ -152,7 +164,7 @@ export default class Game {
 					this.mapTiles.push(new Heart(p5,x+S/3,y+S/3,S/3,S/3, [this.sprites.heart1, this.sprites.heart2]));
 				}
 				else if(t==="g1 "){
-					frontTiles.push(new ImageTile(p5,x,y+3/4*S,S,S/4, this.sprites.grass1));
+					frontTiles.push(new ImageTile(p5,x,y+3/4*S,S,S/4, this.sprites.grass2));
 				}
 				else if(t==="cl "){
 					frontTiles.push(new ImageTile(p5,x,y+S/2,S,S/2, this.sprites.clover1));
@@ -167,7 +179,7 @@ export default class Game {
 		this.mapTiles = [...backTiles, ...this.mapTiles, ...frontTiles]; 
 	}
 	filterTiles(p5){
-		this.onScreenTiles = this.mapTiles.filter(tile => this.gameScreen.isOnScreen(p5, tile));  
+		this.onScreenTiles = this.mapTiles.filter(tile => this.gameScreen.isOnScreen(tile));  
 		this.collisionTiles = this.onScreenTiles.filter(tile => getDistance(p5, tile, this.player) < 2*this.tileSize && tile !== this.player);
 	}
 	//update even if offscreen

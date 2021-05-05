@@ -1,15 +1,17 @@
 export class GameScreen {
 	constructor(p5){  
-		this.P = p5.createVector(0, 0);  
+		this.P = p5.createVector(0, 0); 
+		this.w = p5.width;
+		this.h = p5.height; 
 		this.backgroundObjects = [];
 		this.foregroundObjects = [];
 		this.opacity = 0; 
 		this.color = [0,0,0]; 
 	}
 
-	isOnScreen(p5, obj){
-		return  obj.P.x < this.P.x + p5.width && obj.P.x + obj.w > this.P.x &&
-				obj.P.y < this.P.y + p5.height && obj.P.y + obj.h > this.P.y;
+	isOnScreen(obj){
+		return  obj.P.x < this.P.x + this.w && obj.P.x + obj.w > this.P.x &&
+				obj.P.y < this.P.y + this.h && obj.P.y + obj.h > this.P.y;
 	}
 	
 	updatePosition(T){  //vector of player translation values 
@@ -21,21 +23,21 @@ export class GameScreen {
 		p5.push();
 		p5.translate(this.P.x, this.P.y);
 		p5.fill(this.color[0], this.color[1], this.color[2], this.opacity);
-		p5.rect(0,0,p5.width, p5.height);
+		p5.rect(0,0,this.w, this.h);
 		p5.pop();
 	}
 
 	shadeSky(p5, game){
 		let rectColor;
-		let H = p5.height/40;
-		let num = p5.height/H;
+		let H = this.h/40;
+		let num = this.h/H;
 		let C1 = p5.color(game.levelData[game.currentLevel].skyStart);
 		let C2 =p5.color(game.levelData[game.currentLevel].skyEnd);
 		p5.noStroke();
 		for (let i = 0; i < num; i++){
 			rectColor = p5.lerpColor(C1, C2, i/num);
 			p5.fill(rectColor);
-			p5.rect(0, i*H, p5.width, H);
+			p5.rect(0, i*H, this.w, H);
 		}
 	}
 
@@ -43,15 +45,15 @@ export class GameScreen {
 		game.levelData[game.currentLevel].levelBackgroundImages.forEach(obj => {
 			//x coord, y coord, width, total height onscreen
 			let bg = obj.img.get(obj.rate * game.player.T.x, 0, 
-							p5.width, p5.ceil(p5.min(p5.height - obj.Y + obj.rate * game.player.T.y, obj.img.height)));
+							this.w, p5.ceil(p5.min(this.h - obj.Y + obj.rate * game.player.T.y, obj.img.height)));
 			p5.image(bg, 0, obj.Y-obj.rate*game.player.T.y, bg.width, bg.height);
-
-			/*noFill();  //uncomment to check get values and img draw locations
-			strokeWeight(4);
-			stroke(255);
-			rect(0, obj.Y-obj.rate*game.player.T.y, bg.width, bg.height);
-			strokeWeight(1);
-			noStroke();//*/
+			/*
+			p5.noFill();  //uncomment to check get values and img draw locations
+			p5.strokeWeight(4);
+			p5.stroke(255);
+			p5.rect(0, obj.Y-obj.rate*game.player.T.y, bg.width, bg.height);
+			p5.strokeWeight(1);
+			p5.noStroke(); //*/
 		});
 	} 
 
@@ -68,13 +70,13 @@ export class GameScreen {
 			else if (effect ==="rain"){obj = Raindrop;}
 
 			while(numB > 0){
-				tempArrB.push(new obj(p5, this.P.x + p5.floor(p5.random(p5.width)), 
-											this.P.y + p5.floor(p5.random(p5.height)), 0.5, 1));
+				tempArrB.push(new obj(p5, this.P.x + p5.floor(p5.random(this.w)), 
+								this.P.y + p5.floor(p5.random(this.h)), 0.5, 1));
 				numB--;
 			}
 			while(numF > 0){
-				tempArrF.push(new obj(p5, this.P.x + p5.floor(p5.random(p5.width)), 
-											this.P.y + p5.floor(p5.random(p5.height)), 1, 1));
+				tempArrF.push(new obj(p5, this.P.x + p5.floor(p5.random(this.w)), 
+								this.P.y + p5.floor(p5.random(this.h)), 1, 1));
 				numF--;
 			}
 		}); 
@@ -102,8 +104,8 @@ export class Snowflake{
 		this.P = p5.createVector(x,y);
 		this.scale = p5.random(scaleMin, scaleMax);
 		this.V = p5.createVector(p5.random(-1,1), 2*this.scale);
-		p5.width = p5.ceil(5*this.scale);  //max size
-		p5.height = p5.ceil(5*this.scale);
+		this.w = p5.ceil(5*this.scale);  //max size
+		this.h = p5.ceil(5*this.scale);
 		this.opacity = 130 + 250*this.scale/2;
 	}
 	updatePosition(){
@@ -114,21 +116,21 @@ export class Snowflake{
 		p5.fill(255,255,255,this.opacity);
 		p5.push();
 		p5.translate(this.P.x, this.P.y);
-		p5.ellipse(0,0,p5.width/2 + p5.random(p5.width/2), p5.height/2 + p5.random(p5.height/2));
+		p5.ellipse(0,0,this.w/2 + p5.random(this.w/2), this.h/2 + p5.random(this.h/2));
 		p5.pop();
 	}
 	checkBounds(p5, gameScreen){  
-		if (this.P.x + p5.width < gameScreen.P.x){
-			this.P.x = gameScreen.P.x + gameScreen.w + p5.width;
+		if (this.P.x + this.w < gameScreen.P.x){
+			this.P.x = gameScreen.P.x + gameScreen.w + this.w;
 		}
-		if (this.P.x - p5.width > gameScreen.P.x + gameScreen.w){
-			this.P.x = gameScreen.P.x - p5.width;
+		if (this.P.x - this.w > gameScreen.P.x + gameScreen.w){
+			this.P.x = gameScreen.P.x - this.w;
 		}
-		if (this.P.y + p5.height < gameScreen.P.y){
-			this.P.y = gameScreen.P.y + gameScreen.h + p5.height;
+		if (this.P.y + this.h < gameScreen.P.y){
+			this.P.y = gameScreen.P.y + gameScreen.h + this.h;
 		}
-		if (this.P.y - p5.height > gameScreen.P.y + gameScreen.h){
-			this.P.y = gameScreen.P.y - p5.height;
+		if (this.P.y - this.h > gameScreen.P.y + gameScreen.h){
+			this.P.y = gameScreen.P.y - this.h;
 		}
 	}
 }
@@ -137,8 +139,8 @@ export class Raindrop extends Snowflake{
 	constructor(p5, x, y, scaleMin, scaleMax){
 		super(p5, x,y, scaleMin, scaleMax);
 		this.V = p5.createVector(1.5*this.scale, 10*this.scale);
-		p5.width = p5.ceil(2*this.V.x);
-		p5.height = p5.ceil(2*this.V.y);
+		this.w = p5.ceil(2*this.V.x);
+		this.h = p5.ceil(2*this.V.y);
 		this.opacity = 120*this.scale;
 	}
 	draw(p5){
@@ -146,7 +148,7 @@ export class Raindrop extends Snowflake{
 		p5.strokeWeight(this.scale);
 		p5.push();
 		p5.translate(this.P.x, this.P.y);
-		p5.line(0,0, p5.width, p5.height);
+		p5.line(0,0, this.w, this.h);
 		p5.pop();
 		p5.noStroke();
 	}

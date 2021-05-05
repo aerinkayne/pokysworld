@@ -1,6 +1,6 @@
 //game file imports from pokyworld
-import { levelData, btnStart, btnPause } from './pokysworld/levelData.js'
-import {Button} from './pokysworld/projectFunc_p5.js'
+import { width, height, levelData, btnStart, btnPause } from './pokysworld/levelData.js'
+import { Button } from './pokysworld/Buttons.js'
 import Game from './pokysworld/gameClass_p5.js';
 
 
@@ -19,15 +19,15 @@ let sprites = {};
 new p5(p5 => {
 
     p5.preload = () => {
-        spritesheet1 = p5.loadImage("./assets/images/sprites1.png");
-        //background1 = p5.loadImage("./assets/images/pexels-pixabay-414171_filtered_400px.jpg");
-        background1 = p5.loadImage("./assets/images/BG0.png")
-        background2 = p5.loadImage("./assets/images/BG1.png")
-        background3 = p5.loadImage("./assets/images/BG2.png")
+        spritesheet1 = p5.loadImage("./assets/images/sprites1H.png");
+        //bg1, bg2 pixalbay, bg3 mariya todorova 
+        background1 = p5.loadImage("./assets/images/pexels-pixabay-414171_filtered_400px.jpg");
+        background2 = p5.loadImage("./assets/images/background_section2_400e2.png")
+        background3 = p5.loadImage("./assets/images/bg3_900pxh_e4.png")
     }
 
     p5.setup = () => {
-        let c = p5.createCanvas(500,400);
+        let c = p5.createCanvas(width, height);
         c.parent('canvas-parent');
         p5.frameRate(60);
 
@@ -92,19 +92,16 @@ new p5(p5 => {
 
         startBtn = new Button(p5, btnStart, ()=> {
             game.gameState = "inGame";
-            console.log(game);  //TODO:
 		});
         pauseBtn = new Button(p5, btnPause, ()=> {
-            //
-			(!game.paused) ? btnPause.txt = "➤" : btnPause.txt = "❚❚";
-			(!game.paused) ? btnPause.txtColor = [200,255,255] : btnPause.txtColor = [0,0,0];
+			(!game.paused) ? pauseBtn.txt = "➤" : pauseBtn.txt = "❚❚";
+			(!game.paused) ? pauseBtn.txtColor = [200,255,255] : pauseBtn.txtColor = [0,0,0];
 			(!game.paused) ? game.paused = true : game.paused = false;
 		});
     }
 
     p5.keyPressed = (ev) => {
         let { keyCode } = ev;
-        console.log(game);
         if (game !== null && game.player.movements.hasOwnProperty(keyCode)){
             game.player.movements[keyCode] = true;  
         }
