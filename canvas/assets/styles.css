@@ -6,17 +6,30 @@
 
 body {
     background-color: #334;
+    font-family: 'dosis', sans-serif;
+    letter-spacing: 0.4px;
+    line-height: 1.6;
+    color: rgb(114, 134, 161);
+}
+p {
+    padding: 0.2em 0.4em 
 }
 
 #canvas-parent {
     margin: 3em auto 1em;
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
+}
+#canvas-parent > div {
+    width: 600px;
 }
 
 canvas {
     box-sizing: content-box;
     border: 1px outset rgb(22, 28, 46);
     border-radius: 2px;
+    order: -1;
 }
+
