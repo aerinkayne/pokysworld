@@ -1,3 +1,5 @@
+import { width, height } from './levelData.js'
+
 //distance between the center of two objects
 export const getDistance = (p5, obj1, obj2) => {
 	return  p5.sqrt(p5.sq(obj1.P.x + obj1.w/2 -(obj2.P.x + obj2.w/2)) + 
@@ -52,4 +54,49 @@ export class LevelSelectButton extends Button{
 		this.accessLevel = number-1;
 		this.txt = `This path leads to ${number}`;
 	}
+}
+
+//*******button configs **********
+
+export const btnStart = {
+	x: width/2 - width/8,
+	y: height/2 - height/16,
+	w: width/4,
+	h: height/8,
+	r: 3,
+	txt: "Click to Start",
+	txtSize: 16,
+	txtColor: [0,0,0],
+	btnColor: [0,200,200]
+}
+export const btnPause = {
+	w: width/16,
+	h: height/20,
+	x: 5,
+	y: height-5 - height/20,
+	r: 2,
+	txt: "❚❚",
+	txtSize: 10,
+	txtColor: [0,0,0],
+	btnColor: [0,200,150]
+}
+export const btnGoToLevel = {
+	x: width/50,
+	y: height-height/18,
+	w: width/16,
+	h: height/25,
+	r: 2,
+	accessLevel: 1,
+	txt: "❚❚",
+	txtSize: 10,
+	txtColor: [0,0,0],
+	btnColor: [0,200,150]
+	/*
+	onClick: ()=> {
+		if (this.accessLevel >=0 && this.accessLevel < pokyGame.numLevels){
+			pokyGame.level = this.accessLevel;
+			pokyGame.loadLevel(this.accessLevel);
+		}
+	}
+	*/
 }

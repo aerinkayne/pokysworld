@@ -166,20 +166,20 @@ export class Player{
 		p5.push();
 		p5.fill(0);
 		p5.stroke(0);
-		p5.rect(p5.width/50, p5.height/40, p5.width/8, p5.height/50, 2);
-		p5.fill(255,70,175);
+		p5.rect(5, 5, p5.width/8, p5.height/50, 2);
+		p5.fill(255,50,175);
 		p5.noStroke();
-		p5.rect(p5.width/50, p5.height/40, p5.map(this.health, 0, this.maxHealth, 0, p5.width/8), p5.height/50, 2);
+		p5.rect(5, 5, p5.map(this.health, 0, this.maxHealth, 0, p5.width/8), p5.height/50, 2);
 		p5.pop();
 	}
 	manaBar(p5){
 		p5.push();
 		p5.fill(0);
 		p5.stroke(0);
-		p5.rect(p5.width/50, 2.2*p5.height/40, p5.width/8, p5.height/50, 2);
-		p5.fill(70,225,255);
+		p5.rect(5, 10 + p5.height/50, p5.width/8, p5.height/50, 2);
+		p5.fill(50,225,255);
 		p5.noStroke();
-		p5.rect(p5.width/50, 2.2*p5.height/40, p5.map(this.mana, 0, this.maxMana, 0, p5.width/8), p5.height/50, 2);
+		p5.rect(5, 10 + p5.height/50, p5.map(this.mana, 0, this.maxMana, 0, p5.width/8), p5.height/50, 2);
 		p5.pop();
 	}
 	addFriction(){           //q                      e

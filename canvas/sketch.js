@@ -1,6 +1,6 @@
 //game file imports from pokyworld
-import { width, height, levelData, btnStart, btnPause } from './pokysworld/levelData.js'
-import { Button } from './pokysworld/Buttons.js'
+import { width, height, levelData } from './pokysworld/levelData.js'
+import { Button, btnStart, btnPause } from './pokysworld/Buttons.js'
 import Game from './pokysworld/gameClass_p5.js';
 
 
@@ -15,7 +15,7 @@ let sprites = {};
 
 
 
-//p5 script is in header, will work.
+//NOTE: p5 script is in header. will work.
 new p5(p5 => {
 
     p5.preload = () => {
