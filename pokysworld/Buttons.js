@@ -1,17 +1,5 @@
 import { width, height } from './levelData.js'
 
-//distance between the center of two objects
-export const getDistance = (p5, obj1, obj2) => {
-	return  p5.sqrt(p5.sq(obj1.P.x + obj1.w/2 -(obj2.P.x + obj2.w/2)) + 
-					p5.sq(obj1.P.y + obj1.h/2 -(obj2.P.y + obj2.h/2))); 
-}
-
-export const mouseIsOver = (mouseX, mouseY) => {
-	return (mouseX > this.P.x && mouseX < this.P.x + this.w &&
-			mouseY > this.P.y && mouseY < this.P.y + this.h);
-}
-
-
 export class Button{
 	constructor(p5, config, callback){
 		this.P = p5.createVector(config.x, config.y);
@@ -57,7 +45,6 @@ export class LevelSelectButton extends Button{
 }
 
 //*******button configs **********
-
 export const btnStart = {
 	x: width/2 - width/8,
 	y: height/2 - height/16,
