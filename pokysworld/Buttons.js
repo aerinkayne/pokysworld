@@ -10,6 +10,7 @@ export class Button{
 		this.txtSize = config.txtSize;
 		this.txtColor = config.txtColor;
 		this.btnColor = config.btnColor;
+		this.btnBorder = config.btnBorder || config.btnColor
 		this.clickTimer = 0;
 		this.clickDelay = 20;
 		this.onClick = callback;
@@ -23,10 +24,12 @@ export class Button{
 	}
 	draw(p5){
 		p5.fill(this.btnColor);
+		p5.stroke(this.btnBorder);
 		p5.rect(this.P.x, this.P.y, this.w, this.h, this.r);
 		p5.textAlign(p5.CENTER,p5.CENTER);
 		p5.textSize(this.txtSize);
 		p5.fill(this.txtColor);
+		p5.noStroke();
 		p5.text(this.txt,this.P.x+this.w/2, this.P.y+this.h/2);
 		this.checkClicks(p5);
 	}
@@ -54,7 +57,8 @@ export const btnStart = {
 	txt: "Click to Start",
 	txtSize: 16,
 	txtColor: [0,0,0],
-	btnColor: [0,200,200]
+	btnColor: [0,200,200], 
+	btnBorder: [0,0,0]
 }
 export const btnPause = {
 	w: width/16,
@@ -65,7 +69,8 @@ export const btnPause = {
 	txt: "❚❚",
 	txtSize: 10,
 	txtColor: [0,0,0],
-	btnColor: [0,200,150]
+	btnColor: [0,200,150],
+	btnBorder: [0,0,0]
 }
 export const btnGoToLevel = {
 	x: width/50,
