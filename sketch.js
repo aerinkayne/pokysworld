@@ -1,5 +1,5 @@
 //game file imports from pokyworld
-import { width, height, levelData } from './pokysworld/levelData.js'
+import { width, height, tilesize, levelData } from './pokysworld/levelData.js'
 import { Button, btnStart, btnPause } from './pokysworld/Buttons.js'
 import Game from './pokysworld/gameClass_p5.js';
 
@@ -85,7 +85,7 @@ new p5(p5 => {
         sprites.pokyClimb1 = spritesheet1.get(342,50, 40,50);
         sprites.pokyClimb2 = spritesheet1.get(385,50, 40,50);
 
-        game = new Game(sprites, p5);
+        game = new Game(p5, sprites, tilesize);
         game.levelData = levelData;
 
         
@@ -117,6 +117,7 @@ new p5(p5 => {
 
 
     p5.draw = () => {
+        p5.background(255)
         game.manageScenes(p5, startBtn, pauseBtn);
     }
 });

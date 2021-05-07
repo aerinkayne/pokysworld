@@ -41,19 +41,33 @@ export class GameScreen {
 		}
 	}
 
+
 	drawBackgrounds(p5, game){
-		game.levelData[game.currentLevel].levelBackgroundImages.forEach(obj => {
-			//x coord, y coord, width, total height onscreen
-			let bg = obj.img.get(obj.rate * game.player.T.x, 0, 
-							this.w, p5.ceil(p5.min(this.h - obj.Y + obj.rate * game.player.T.y, obj.img.height)));
-			p5.image(bg, 0, obj.Y-obj.rate*game.player.T.y, bg.width, bg.height);
-			/*
-			p5.noFill();  //uncomment to check get values and img draw locations
-			p5.strokeWeight(4);
-			p5.stroke(255);
-			p5.rect(0, obj.Y-obj.rate*game.player.T.y, bg.width, bg.height);
-			p5.strokeWeight(1);
-			p5.noStroke(); //*/
+		game.levelData[game.currentLevel].levelBackgroundImages.forEach((background) => { 
+			let {img, rate, offsetY} = background;
+
+			//x, y, width, height to get.  
+			let getX = rate * this.P.x;
+			let getY = img.height <= this.h ? 0 : p5.max(0, rate * this.P.y - offsetY); //P.y can be negative.
+			let getW = this.w 	//all images are currently full width  
+			//lesser of:  (lesser of: height of canvas vs height of onscreen image)  vs  height of image 
+			let getH = p5.ceil(p5.min(p5.min(this.h, this.h - offsetY + rate * this.P.y), img.height));
+			
+			//where to place relative to screen
+			let placeY = offsetY - rate * this.P.y + getY;
+			
+			let bg = img.get(getX, getY, getW, getH);
+			if (bg.width > 0 && bg.height > 0){  //don't try to render an image with w or h < 1
+				p5.image(bg, 0, placeY, bg.width, bg.height);
+
+				/*
+				p5.noFill();  //uncomment to check get values and img draw locations
+				p5.strokeWeight(9 - 3*i);
+				i === 0 ? p5.stroke(255,100,100) : i === 1 ? p5.stroke(100,255,100) : p5.stroke(100,100,255)
+				p5.rect(0, placeY, bg.width, bg.height);
+				p5.strokeWeight(1);
+				p5.noStroke(); //*/
+			}
 		});
 	} 
 

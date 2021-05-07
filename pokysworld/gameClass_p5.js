@@ -1,21 +1,31 @@
-import { MapTile, MovingTile, IceTile, CloudTile, LavaTile, HealthSpringTile, CloudMover, WaterTile, ClimbTile, Heart, ImageTile, getDistance } from './MapTiles.js';
+import { MapTile, MovingTile, IceTile, CloudTile, LavaTile, HealthSpringTile, 
+		CloudMover, WaterTile, ClimbTile, Heart, ImageTile} from './MapTiles.js';
 import { Player } from './playerClass_p5.js';
 import { GameScreen } from './screenClass_p5.js';
 
+
+//distance between the center of two block objects
+function getDistance (p5, obj1, obj2) {
+	return  p5.sqrt(p5.sq(obj1.P.x + obj1.w/2 -(obj2.P.x + obj2.w/2)) + 
+					p5.sq(obj1.P.y + obj1.h/2 -(obj2.P.y + obj2.h/2))); 
+}
+
 export default class Game { 
-	constructor(sprites, p5) {
+	constructor(p5, sprites, tilesize) {
 		this.sprites = sprites;
 		this.player = new Player(p5);
 		this.gameScreen = new GameScreen(p5);  
 		this.mapCodeLength = 3;  //2 chars for coding + 1 space
-		this.tileSize = 40;
+		this.tileSize = tilesize;
+		this.levelW = null;  //reassigned at level load
+		this.levelH - null;
 		this.mapTiles = [];
 		this.onScreenTiles = [];
 		this.collisionTiles = [];
 		this.movingTiles = [];
 		this.currentLevel = 0;
-		this.numLevels = 2; //update later
-		//this.levelData = levelData;
+		this.numLevels = 2; 	//TODO:
+		this.levelData = null;  //assign in setup after images are loaded
 		this.paused = false;
 		this.setup = false;
 		this.gameState = "start";
@@ -32,7 +42,6 @@ export default class Game {
 		if (this.gameState === "start") {
 			p5.background(100,100,125);
 			btnStart.draw(p5);
-			//console.log('calling');
 		}
 		
 		if (this.gameState === "inGame") {

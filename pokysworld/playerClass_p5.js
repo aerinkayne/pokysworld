@@ -45,7 +45,7 @@ export class Player{
 		}
 	}
 	updateCycleTime() {
-		this.animationCycleTime = this.baseCycleTime - 2 * this.V.mag();
+		this.animationCycleTime = Math.round(this.baseCycleTime - 2 * this.V.mag());
 	}
 	setSize(w,h){
 		this.w = w;
@@ -213,10 +213,11 @@ export class Player{
 		game.mapCollision("Y");
 	}
 	updateTranslation(p5, game){
-		//console.log(game)
+		//console.log(game)  TODO:// check integers for position updates.
 		this.T.x = (this.P.x + this.w/2 >= game.levelW - p5.width/2) ? game.levelW - p5.width  
 									: p5.round(p5.max(0, this.P.x + this.w/2 - p5.width/2));
-		this.T.y = (this.P.y + this.h/2 >= game.levelH - p5.height/2)? game.levelH - p5.height 
+		this.T.y = (this.P.y + this.h/2 >= game.levelH - p5.height/2) ? game.levelH - p5.height 
 									: p5.round(this.P.y + this.h/2 - p5.height/2);  //no upper bound
 	}
+
 }	
