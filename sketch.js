@@ -33,9 +33,9 @@ new p5(p5 => {
 
        
         //backgrounds.  lv, img1, img2 img3
-        levelData[0].levelBackgroundImages[0].img = background1;
-        levelData[0].levelBackgroundImages[1].img = background2;
-        levelData[0].levelBackgroundImages[2].img = background3;
+        levelData[0].backgroundImage = background1;
+        levelData[0].parallaxImages[0].img = background2;
+        levelData[0].parallaxImages[1].img = background3;
 
         //sprites
         sprites.grass1 = spritesheet1.get(0,0,50,15); 
