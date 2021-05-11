@@ -50,13 +50,13 @@ export default class Game {
 				this.gameScreen.populateArrays(p5, this);
 				this.setup = true;
 			}	
-			//not currently used
+			//NOTE: not currently used
 			//this.gameScreen.shadeSky(p5, this);
 
-			
+			this.gameScreen.updatePosition(this.player.T); 
 			this.gameScreen.drawBackgrounds(p5, this);
 			this.gameCamera(p5);
-			this.gameScreen.updatePosition(this.player.T); //needs to be after cam to track properly
+			
    
 			this.player.manageUpdates(p5, this);
 

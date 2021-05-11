@@ -46,10 +46,13 @@ export const levelData = [
 
 	{//0
 	levelMap: level1,
-	//images assigned in preload.  properties refer to image, translation rate relative to player translation, and intitial P.y location of image.
-	levelBackgroundImages: [{img:null, rate:0, offsetY: 0},  
-							{img:null, rate:0.05,  offsetY: 150},  
-							{img:null, rate:0.65,  offsetY: -115}], 
+	//images assigned in preload. 
+	backgroundImage: null,
+	//properties refer to image, translation rate relative to player translation, and intitial P.y location of image.
+	parallaxImages: [
+					{img:null, rate:0.08,  initialY: 150},  
+					{img:null, rate:0.8,  initialY: -30}
+					], 
 	skyStart: [120,170,255],
 	skyEnd: [250,95,40],
 	levelMusic: null,  //assign in preload
@@ -63,9 +66,10 @@ export const levelData = [
 
 	{ //1
 	levelMap: level2,
-	levelBackgroundImages: [{img:null, rate:0.05, offsetY: 175},  
-							{img:null, rate:0.1,  offsetY: 0},
-							{img:null, rate:0.35,  offsetY: 225}], 
+	backgroundImage: null,
+	parallaxImages: [ {img:null, rate:0.25,  initialY: 0},
+					  {img:null, rate:0.8,  initialY: 225}
+					], 
 	skyStart: [120,170,255],
 	skyEnd: [250,95,40],
 	levelMusic: null,  //assign in preload
